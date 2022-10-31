@@ -17,7 +17,7 @@ class PhoneFieldView extends StatelessWidget {
   final bool withLabel;
   final bool outlineBorder;
   final bool shouldFormat;
-  final bool required;
+  final bool isCountryChipPersistent;
   final bool mobileOnly;
   final bool useRtl;
 
@@ -29,16 +29,13 @@ class PhoneFieldView extends StatelessWidget {
     required this.withLabel,
     required this.outlineBorder,
     required this.shouldFormat,
-    required this.required,
+    required this.isCountryChipPersistent,
     required this.mobileOnly,
     required this.useRtl,
   }) : super(key: key);
 
   PhoneNumberInputValidator? _getValidator() {
     List<PhoneNumberInputValidator> validators = [];
-    if (required) {
-      validators.add(PhoneValidator.required());
-    }
     if (mobileOnly) {
       validators.add(PhoneValidator.validMobile());
     } else {
@@ -54,10 +51,9 @@ class PhoneFieldView extends StatelessWidget {
         textDirection: useRtl ? TextDirection.rtl : TextDirection.ltr,
         child: PhoneFormField(
           key: inputKey,
-          // controller: controller,
-          shouldFormat: shouldFormat,
+          controller: controller,
+          shouldFormat: shouldFormat && !useRtl,
           autofocus: true,
-          initialValue: PhoneNumber.fromRaw('+336787678'),
           autofillHints: const [AutofillHints.telephoneNumber],
           countrySelectorNavigator: selectorNavigator,
           defaultCountry: IsoCode.US,
@@ -77,6 +73,7 @@ class PhoneFieldView extends StatelessWidget {
           onSaved: (p) => print('saved $p'),
           // ignore: avoid_print
           onChanged: (p) => print('changed $p'),
+          isCountryChipPersistent: isCountryChipPersistent,
         ),
       ),
     );
@@ -95,10 +92,10 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: const [
         Locale('en', ''),
+        Locale('fr', ''),
         Locale('es', ''),
         Locale('el', ''),
         Locale('de', ''),
-        Locale('fr', ''),
         Locale('it', ''),
         Locale('ru', ''),
         Locale('sv', ''),
@@ -128,7 +125,7 @@ class PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
   bool outlineBorder = true;
   bool mobileOnly = true;
   bool shouldFormat = true;
-  bool required = false;
+  bool isCountryChipPersistent = false;
   bool withLabel = true;
   bool useRtl = false;
   CountrySelectorNavigator selectorNavigator =
@@ -176,9 +173,10 @@ class PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
                       title: const Text('Label'),
                     ),
                     SwitchListTile(
-                      value: required,
-                      onChanged: (v) => setState(() => required = v),
-                      title: const Text('Required'),
+                      value: isCountryChipPersistent,
+                      onChanged: (v) =>
+                          setState(() => isCountryChipPersistent = v),
+                      title: const Text('Persistent country chip'),
                     ),
                     SwitchListTile(
                       value: mobileOnly,
@@ -192,7 +190,9 @@ class PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
                     ),
                     SwitchListTile(
                       value: useRtl,
-                      onChanged: (v) => setState(() => useRtl = v),
+                      onChanged: (v) {
+                        setState(() => useRtl = v);
+                      },
                       title: const Text('RTL'),
                     ),
                     ListTile(
@@ -249,7 +249,7 @@ class PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
                         selectorNavigator: selectorNavigator,
                         withLabel: withLabel,
                         outlineBorder: outlineBorder,
-                        required: required,
+                        isCountryChipPersistent: isCountryChipPersistent,
                         mobileOnly: mobileOnly,
                         shouldFormat: shouldFormat,
                         useRtl: useRtl,
@@ -258,9 +258,9 @@ class PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
                     const SizedBox(height: 12),
                     Text(controller.value.toString()),
                     Text('is valid mobile number '
-                        '${controller.value?.validate(type: PhoneNumberType.mobile) ?? 'false'}'),
+                        '${controller.value?.isValid(type: PhoneNumberType.mobile) ?? 'false'}'),
                     Text(
-                        'is valid fixed line number ${controller.value?.validate(type: PhoneNumberType.fixedLine) ?? 'false'}'),
+                        'is valid fixed line number ${controller.value?.isValid(type: PhoneNumberType.fixedLine) ?? 'false'}'),
                     const SizedBox(height: 12),
                     ElevatedButton(
                       onPressed: controller.value == null
@@ -275,10 +275,9 @@ class PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton(
-                      onPressed: () =>
-                          controller.value = PhoneNumber.fromIsoCode(
-                        IsoCode.FR,
+                      onPressed: () => controller.value = PhoneNumber.parse(
                         '699999999',
+                        destinationCountry: IsoCode.FR,
                       ),
                       child: const Text('Set +33 699 999 999'),
                     ),

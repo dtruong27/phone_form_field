@@ -112,6 +112,8 @@ class PhoneFormField extends FormField<PhoneNumber> {
     PhoneNumber? initialValue,
     double flagSize = 16,
     PhoneNumberInputValidator? validator,
+    bool isCountrySelectionEnabled = true,
+    bool isCountryChipPersistent = false,
     // textfield inputs
     TextInputType keyboardType = TextInputType.phone,
     TextInputAction? textInputAction,
@@ -120,7 +122,6 @@ class PhoneFormField extends FormField<PhoneNumber> {
     StrutStyle? strutStyle,
     TextAlign textAlign = TextAlign.start,
     TextAlignVertical? textAlignVertical,
-    TextDirection? textDirection,
     bool autofocus = false,
     String obscuringCharacter = '*',
     bool obscureText = false,
@@ -174,6 +175,8 @@ class PhoneFormField extends FormField<PhoneNumber> {
               flagSize: flagSize,
               decoration: decoration,
               enabled: enabled,
+              isCountrySelectionEnabled: isCountrySelectionEnabled,
+              isCountryChipPersistent: isCountryChipPersistent,
               // textfield params
               autofillHints: autofillHints,
               keyboardType: keyboardType,
@@ -183,7 +186,6 @@ class PhoneFormField extends FormField<PhoneNumber> {
               strutStyle: strutStyle,
               textAlign: textAlign,
               textAlignVertical: textAlignVertical,
-              textDirection: textDirection,
               autofocus: autofocus,
               obscuringCharacter: obscuringCharacter,
               obscureText: obscureText,
@@ -211,6 +213,7 @@ class PhoneFormField extends FormField<PhoneNumber> {
               scrollPhysics: scrollPhysics,
               restorationId: restorationId,
               enableIMEPersonalizedLearning: enableIMEPersonalizedLearning,
+              inputFormatters: inputFormatters,
             );
           },
         );

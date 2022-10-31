@@ -1,3 +1,25 @@
+## [7.0.2] 10/08/2022
+- updated phone metadata
+- updated parser library
+- added new customization properties to country selector navigator: `titleStyle` & `subtitleStyle`. For searchbox: `InputDecoration`, `TextStyle`.
+- added scroll physics to bottom sheet navigator
+- added ukrainian language
+- improved russian language
+- fix example
+
+## [7.0.1] 27/07/2022
+- fix country code not shown when there is an hint
+- added `isCountryChipPersistent`
+- added `isCountrySelectionEnabled`
+
+## [7.0.0] 25/07/2022
+- [Breaking] Update phone_numbers_parser major version
+
+## [6.1.1] 22/07/2022
+- Readd RTL support
+- Removed diacritics from search
+- Added height and width to dialog
+
 ## [6.1.0] 26/05/2022
 - Revert RTL support as it is incomplete. (Feel free to resubmit a PR).
 - Fix a country selection search input auto focus issue.
